@@ -1,0 +1,77 @@
+body{
+	width:auto;
+	margin:0;
+	font-family:Trebuchet MS;
+	background:url("pics/back3.jpg") fixed left no-repeat;
+	background-size: cover;
+}
+				/*Search*/
+				
+._forms{
+	margin:15px;
+	display:flex;
+	justify-content:center;
+}
+
+label{
+	font-size:20px;
+	color: rgb(0, 0, 0);
+}
+
+input{
+	font-family:Trebuchet MS;
+	font-size:20px;
+}
+._submit{
+	font-family:Trebuchet MS;
+	font-size:20px;
+	margin-left:140px;
+}
+	
+		/*Adapt*/
+
+@media screen and (orientation: landscape) and (max-width: 1024px){ 
+    ._nav_link{
+		font-size:10px;		
+		margin-left:2px;
+		padding-right:10px;
+		padding-left:10px;
+	}	
+	
+	._logo{
+		font-size:20px;		
+	}	
+
+}
+
+@media screen and (orientation: portrait) and (max-width:700px){ 
+	._nav_link{
+		font-size:10px;	
+		margin-left:2px;
+		padding-right:8px;
+		padding-left:8px;
+	}
+	
+
+	._logo{
+		font-size:15px;		
+	}	
+
+	select{
+		font-size:15px;
+		margin-left:0px
+	}
+
+	input{
+		font-size:15px;
+	}
+	
+	._submit{
+		margin-left:0;
+		font-size:15px;
+	}
+
+	label{
+		font-size:12px;
+	}
+}
