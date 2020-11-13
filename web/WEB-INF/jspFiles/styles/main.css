@@ -6,7 +6,6 @@ body{
 	background-size: cover;
 }
 				/*Search*/
-				
 ._forms{
 	margin:15px;
 	display:flex;
@@ -27,35 +26,25 @@ input{
 	font-size:20px;
 	margin-left:140px;
 }
-	
-		/*Adapt*/
 
-@media screen and (orientation: landscape) and (max-width: 1024px){ 
-    ._nav_link{
-		font-size:10px;		
-		margin-left:2px;
-		padding-right:10px;
-		padding-left:10px;
-	}	
-	
-	._logo{
-		font-size:20px;		
-	}	
-
+._reg_link{
+	display: flex;
+	justify-content: center;
 }
 
-@media screen and (orientation: portrait) and (max-width:700px){ 
-	._nav_link{
-		font-size:10px;	
-		margin-left:2px;
-		padding-right:8px;
-		padding-left:8px;
-	}
-	
+._link{
+	text-decoration: none;
+	color: black;
+	transition: color 1s;
+}
 
-	._logo{
-		font-size:15px;		
-	}	
+._link:hover{
+	/*color: rgb(7, 0, 122);*/
+	color:rgba(0, 5, 74, 1)
+}
+
+		/*Adapt*/
+@media screen and (orientation: portrait) and (max-width:700px){
 
 	select{
 		font-size:15px;

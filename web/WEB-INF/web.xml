@@ -5,9 +5,10 @@
          version="4.0">
     <servlet>
         <servlet-name>MainPage</servlet-name>
-        <jsp-file>/WEB-INF/jspFiles/main.jsp</jsp-file>
+        <servlet-class>controller.LoginController</servlet-class>
+        <!--jsp-file>/WEB-INF/jspFiles/main.jsp</jsp-file-->
     </servlet>
-
+    
     <servlet-mapping>
         <servlet-name>MainPage</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -15,7 +16,7 @@
 
     <servlet>
         <servlet-name>RegisterPage</servlet-name>
-        <servlet-class>controller.IndexServlet</servlet-class>
+        <servlet-class>controller.RegisterController</servlet-class>
         <!--jsp-file>/WEB-INF/jspFiles/register.jsp</jsp-file-->
     </servlet>
 
@@ -23,4 +24,52 @@
         <servlet-name>RegisterPage</servlet-name>
         <url-pattern>/reg</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>EnrollmentForm</servlet-name>
+        <servlet-class>controller.EnrollmentController</servlet-class>
+        <!--jsp-file>/WEB-INF/jspFiles/enroll.jsp</jsp-file-->
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>EnrollmentForm</servlet-name>
+        <url-pattern>/enroll</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DepartmentsPage</servlet-name>
+        <servlet-class>controller.Controller</servlet-class>
+        <!--jsp-file>/WEB-INF/jspFiles/enroll.jsp</jsp-file-->
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DepartmentsPage</servlet-name>
+        <url-pattern>/departments</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminsPage</servlet-name>
+        <servlet-class>controller.Controller</servlet-class>
+        <!--jsp-file>/WEB-INF/jspFiles/enroll.jsp</jsp-file-->
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AdminsPage</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>controller.EncodingFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/</url-pattern>
+        <servlet-name>RegisterPage</servlet-name>
+        <servlet-name>MainPage</servlet-name>
+        <servlet-name>AdminsPage</servlet-name>
+        <servlet-name>DepartmentsPage</servlet-name>
+        <servlet-name>EnrollmentForm</servlet-name>
+    </filter-mapping>
 </web-app>
