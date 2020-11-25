@@ -1,4 +1,4 @@
-package beans;
+package by.bsuir.beans;
 
 import java.util.ArrayList;
 

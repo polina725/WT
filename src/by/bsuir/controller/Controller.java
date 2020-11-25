@@ -1,9 +1,7 @@
-package controller;
+package by.bsuir.controller;
 
-import beans.Course;
-import beans.Department;
-import dao.DAO;
-import exception.RegisterException;
+import by.bsuir.beans.Department;
+import by.bsuir.exception.RegisterException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,15 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import static service.SomeAction.*;
+import static by.bsuir.service.SomeAction.*;
 
 
 public class Controller extends HttpServlet {

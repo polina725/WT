@@ -1,31 +1,46 @@
-package beans;
+package by.bsuir.beans;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Entrant extends CommonUserInstance {
+public class Entrant extends User {
     private int subjectAmount = 3;
     private int certificate;
     private Subject[] subjects = new Subject[subjectAmount];
     private String status;
-    private int departmentId;
     private String department;
     private int courseId;
     private String course;
+    private int totalScore=0;
+
+    public Entrant(int id){
+        super(id);
+    }
 
     public Entrant(ResultSet set) {
         super(set);
         try {
+            status=set.getString("status");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addSubjectsAndCourseInfo(ResultSet set){
+        try {
             String[] subjectsNames = set.getString("subjects").split(",");
             String[] subjectsIds= set.getString("subject_id").split(",");
-            String[] subjectsScores= set.getString("subject_score").split(",");
-            for(int i=0;i<subjectAmount;i++)
-                subjects[i]=new Subject(subjectsNames[i], Integer.parseInt(subjectsIds[i]),Integer.parseInt(subjectsScores[i]));
+            String[] subjectsScores= set.getString("scores").split(",");
+            if(subjectsIds.length!=0)
+                for(int i=0;i<subjectAmount;i++) {
+                    subjects[i] = new Subject(subjectsNames[i], Integer.parseInt(subjectsIds[i]), Integer.parseInt(subjectsScores[i]));
+                }
             certificate = set.getInt("certificate_score");
-            status=set.getString("status");
+            totalScore=set.getInt("total_score");
+            department=set.getString("department");
+            course=set.getString("course");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -72,10 +87,24 @@ public class Entrant extends CommonUserInstance {
     }
 
     public void setSubject(int subjInd, String key, HttpSession session, HttpServletRequest request){
-        String tmp =new String(((String)session.getAttribute(key)).getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
-        getSubjects()[subjInd] = new Subject((String)session.getAttribute(key),
+        String tmp =(String)session.getAttribute(key);
+        getSubjects()[subjInd] = new Subject(tmp,
                 (int)session.getAttribute(key+"_id"),
                 Integer.parseInt(request.getParameter(tmp))
         );
+    }
+
+    public int getTotalScore() {
+        return totalScore;
+    }
+
+    public void calcTotalScore() {
+        for(Subject s : subjects)
+            this.totalScore+=s.getScore();
+        this.totalScore+=certificate;
+    }
+
+    public String getDepartment() {
+        return department;
     }
 }

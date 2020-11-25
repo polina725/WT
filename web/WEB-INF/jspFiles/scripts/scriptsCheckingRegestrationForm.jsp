@@ -33,6 +33,8 @@ function checkForm() {
 
 
 function  loginAndPasswordCorrect(){
+    if(document.getElementById("password").value.length<8)
+        return false;
     return !(/\W/.test(document.getElementById("login").value) || /\W/.test(document.getElementById("password").value));
 }
 

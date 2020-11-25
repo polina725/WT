@@ -1,4 +1,4 @@
-package beans;
+package by.bsuir.beans;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +11,8 @@ public class Course {
     private int budgetPlacesAmount;
     private int feePlacesAmount;
     private Subject[] subjects = new Subject[subjectAmount];
+    private boolean acceptApplications=true;
+    private int totalStudentCount = 0;
 
     public Course(ResultSet set){
         try {
@@ -23,6 +25,8 @@ public class Course {
             String[] subjectsIds= set.getString("subject_id").split(",");
             for(int i=0;i<subjectAmount;i++)
                 subjects[i]=new Subject(subjectsNames[i], Integer.parseInt(subjectsIds[i]),0);
+/*            if(set.getInt("idrecord")!=0)
+                acceptApplications=false;*/
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -59,4 +63,15 @@ public class Course {
         return subjects;
     }
 
+    public boolean isAcceptApplications() {
+        return acceptApplications;
+    }
+
+    public void setTotalStudentCount(int count){
+        this.totalStudentCount = count;
+    }
+
+    public int getTotalStudentCount(){
+        return this.totalStudentCount;
+    }
 }

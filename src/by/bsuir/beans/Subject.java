@@ -1,4 +1,4 @@
-package beans;
+package by.bsuir.beans;
 
 public class Subject {
     private String name;

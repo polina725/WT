@@ -1,4 +1,4 @@
-package controller;
+package by.bsuir.controller;
 
 import javax.servlet.*;
 import java.io.IOException;

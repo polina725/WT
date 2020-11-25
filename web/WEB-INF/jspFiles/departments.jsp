@@ -27,16 +27,16 @@
                         <tr class="course">
                             <c:forEach var="course" items="${dep.getCourses()}">
                                 <th>
-                                    <h>Enrollment plan: ${course.getFeePlacesAmount()+course.getBudgetPlacesAmount()}</h>
+                                    <h3>План приема: ${course.getFeePlacesAmount()+course.getBudgetPlacesAmount()}</h3>
                                     <form method="post">
-                                        <input type="submit" name="link_button" value="${course.getName()}" />
+                                        <input type="hidden" name="link_button" value="${course.getName()}" />
+                                        <input type="submit" value="${course.getName()}"/>
                                     </form>
                                 </th>
                             </c:forEach>
                         </tr>
                     </c:forEach>
             </tabel>
-            <a href="" name="mem" value="1">OAOAOA</a>
             <h1>${error_message}</h1>
         </div>
 

@@ -15,9 +15,9 @@ function isEmpty(value)
 }
 
 function checkForm() {
-    var allFilled = loginAndPasswordCorrect();
-    allFilled = allFilled && isEmpty(document.getElementById("login").value);
-    allFilled = allFilled && isEmpty(document.getElementById("password").value);
+    var allFilled = document.getElementById("ru").checked || document.getElementById("by").checked;
+    allFilled = allFilled && isEmpty(document.getElementById("certificate").value);
+    allFilled = allFilled && isEmpty(document.getElementById("state_lan").value);
     if (allFilled){
         document.getElementById("submit").disabled = 0;
     }
@@ -26,6 +26,3 @@ function checkForm() {
     }
 }
 
-function  loginAndPasswordCorrect(){
-return !(/\W/.test(document.getElementById("login").value) || /\W/.test(document.getElementById("password").value));
-}

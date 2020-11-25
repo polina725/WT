@@ -1,4 +1,4 @@
-package exception;
+package by.bsuir.exception;
 
 public class RegisterException extends Exception {
 

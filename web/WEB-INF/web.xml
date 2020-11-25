@@ -5,7 +5,7 @@
          version="4.0">
     <servlet>
         <servlet-name>MainPage</servlet-name>
-        <servlet-class>controller.LoginController</servlet-class>
+        <servlet-class>by.bsuir.controller.LoginController</servlet-class>
         <!--jsp-file>/WEB-INF/jspFiles/main.jsp</jsp-file-->
     </servlet>
     
@@ -16,7 +16,7 @@
 
     <servlet>
         <servlet-name>RegisterPage</servlet-name>
-        <servlet-class>controller.RegisterController</servlet-class>
+        <servlet-class>by.bsuir.controller.RegisterController</servlet-class>
         <!--jsp-file>/WEB-INF/jspFiles/register.jsp</jsp-file-->
     </servlet>
 
@@ -27,7 +27,7 @@
     
     <servlet>
         <servlet-name>EnrollmentForm</servlet-name>
-        <servlet-class>controller.EnrollmentController</servlet-class>
+        <servlet-class>by.bsuir.controller.EnrollmentController</servlet-class>
         <!--jsp-file>/WEB-INF/jspFiles/enroll.jsp</jsp-file-->
     </servlet>
 
@@ -38,7 +38,7 @@
 
     <servlet>
         <servlet-name>DepartmentsPage</servlet-name>
-        <servlet-class>controller.Controller</servlet-class>
+        <servlet-class>by.bsuir.controller.Controller</servlet-class>
         <!--jsp-file>/WEB-INF/jspFiles/enroll.jsp</jsp-file-->
     </servlet>
 
@@ -49,7 +49,7 @@
 
     <servlet>
         <servlet-name>AdminsPage</servlet-name>
-        <servlet-class>controller.Controller</servlet-class>
+        <servlet-class>by.bsuir.controller.AdminController</servlet-class>
         <!--jsp-file>/WEB-INF/jspFiles/enroll.jsp</jsp-file-->
     </servlet>
 
@@ -60,7 +60,7 @@
 
     <filter>
         <filter-name>EncodingFilter</filter-name>
-        <filter-class>controller.EncodingFilter</filter-class>
+        <filter-class>by.bsuir.controller.EncodingFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -71,5 +71,17 @@
         <servlet-name>AdminsPage</servlet-name>
         <servlet-name>DepartmentsPage</servlet-name>
         <servlet-name>EnrollmentForm</servlet-name>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>RoleFilter</filter-name>
+        <filter-class>by.bsuir.controller.RoleFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>RoleFilter</filter-name>
+        <url-pattern>/</url-pattern>
+        <servlet-name>EnrollmentForm</servlet-name>
+        <servlet-name>AdminsPage</servlet-name>
     </filter-mapping>
 </web-app>

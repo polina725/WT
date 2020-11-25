@@ -1,8 +1,7 @@
-package controller;
+package by.bsuir.controller;
 
-import beans.Course;
-import beans.Entrant;
-import beans.Subject;
+import by.bsuir.beans.Course;
+import by.bsuir.beans.Entrant;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import static service.SomeAction.*;
+import static by.bsuir.service.SomeAction.*;
 
 public class EnrollmentController extends HttpServlet {
     final static Logger log;
@@ -28,7 +27,7 @@ public class EnrollmentController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
-        Entrant entrant = (Entrant) getUserByHash((String)session.getAttribute("hash"),true);
+        Entrant entrant = (Entrant) getUserByHash((String)session.getAttribute("hash"),true,false);
         entrant.setCertificate(Integer.parseInt(request.getParameter("certificate_score")));
         entrant.setSubject(0,"first_s",session,request);
         entrant.setSubject(1,"second_s",session,request);

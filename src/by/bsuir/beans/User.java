@@ -1,9 +1,9 @@
-package beans;
+package by.bsuir.beans;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CommonUserInstance implements User {
+public class User implements CommonUser {
     private String name;
     private String surname;
     private String role;
@@ -11,7 +11,11 @@ public class CommonUserInstance implements User {
     private int id;
 //    private String hash;
 
-    public CommonUserInstance(ResultSet set){
+    public User(int id){
+        this.id = id;
+    }
+
+    public User(ResultSet set){
         try {
             id = set.getInt("iduser");
             name = set.getString("name");
@@ -24,7 +28,7 @@ public class CommonUserInstance implements User {
         }
     }
 
-    public CommonUserInstance(String name, String surname, String login){
+    public User(String name, String surname, String login){
         this.name = name;
         this.surname = surname;
         this.login = login;
