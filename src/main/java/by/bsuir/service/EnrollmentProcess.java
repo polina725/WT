@@ -12,18 +12,14 @@ public class EnrollmentProcess {
     private AdminDAO dao = new AdminDAO();
 
     public void stopEnrollmentCampaign(){
-        try {
-            dao.insertRecord();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        dao.insertRecord();
     }
 
-    public void changeStudentStatus() throws SQLException {
+    public void changeStudentStatus(){
         dao.changeStudentStatus();
     }
 
-    public ArrayList<Course> getCourses() throws SQLException {
+    public ArrayList<Course> getCourses(){
         HashMap<Integer, Course> m = dao.getCourses();
         ArrayList<Course> l = new ArrayList<>();
         for(Map.Entry<Integer,Course> entry : m.entrySet()){

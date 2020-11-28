@@ -41,17 +41,4 @@ public class ConnectionPool {
         }
         return connection;
     }
-
-    public static String getExceptionStackTrace(Exception e){
-        String ex=e.getMessage()+"\n";
-        StackTraceElement[] elements = e.getStackTrace();
-        for(StackTraceElement el : elements){
-            ex+=el.toString()+"\n";
-        }
-        return ex;
-    }
-
 }
-
-
-// TODO connection==null case + exceptions

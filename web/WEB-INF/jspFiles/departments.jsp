@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <html>
     <head>
         <title>Departments</title>
@@ -15,10 +16,21 @@
         <style><%@include file="/WEB-INF/jspFiles/styles/main.css"%></style>
         <style><%@include file="/WEB-INF/jspFiles/styles/header.css"%></style>
     </head>
-
+    <fmt:setLocale value='<%=request.getSession().getAttribute("lang")%>'/>
+    <fmt:setBundle basename="lang" var="loc"/>
+    <fmt:message bundle="${loc}" key="lang.label.enr_plan" var="enr_plan"/>
+    <fmt:message bundle="${loc}" key="lang.label.singout" var="out"/>
+    <fmt:message bundle="${loc}" key="lang.label.department" var="dep"/>
     <body>
-
-        <%@include file="/WEB-INF/jspFiles/templates/header.jsp"%>
+        <div class="_header">
+            <div class="_logo">JAVA_WT_2020</div>
+            <div class="_nav">
+                <nav>
+                    <a class="_nav_link" href="departments">${dep}</a>
+                    <a class="_nav_link" href="login">${out}</a>
+                </nav>
+            </div>
+        </div>
 
         <div class="courses_table">
             <tabel class="courses_l">
@@ -27,7 +39,7 @@
                         <tr class="course">
                             <c:forEach var="course" items="${dep.getCourses()}">
                                 <th>
-                                    <h3>План приема: ${course.getFeePlacesAmount()+course.getBudgetPlacesAmount()}</h3>
+                                    <h3>${enr_plan}: ${course.getFeePlacesAmount()+course.getBudgetPlacesAmount()}</h3>
                                     <form method="post">
                                         <input type="hidden" name="link_button" value="${course.getName()}" />
                                         <input type="submit" value="${course.getName()}"/>

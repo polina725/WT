@@ -3,11 +3,15 @@ package by.bsuir.dao;
 import by.bsuir.beans.User;
 import by.bsuir.beans.Entrant;
 import by.bsuir.beans.CommonUser;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static by.bsuir.service.Utilities.getExceptionStackTrace;
 
 public class UserDAO {
     private String USER_INSERT_QUERY = "INSERT INTO user ( login , password , user.name , surname , role ) VALUES ( ? , ? , ? , ? , 'STUDENT');"+
@@ -44,7 +48,6 @@ public class UserDAO {
                                                         "           SubjectInfo.subjects\n" +
                                                         "    FROM entrant\n" +
                                                         "             JOIN SubjectInfo ON SubjectInfo.id = entrant.identrant\n" +
-                                                        "    -- WHERE identrant = 1\n" +
                                                         "    GROUP BY entrant.identrant\n" +
                                                         ")\n" +
                                                         "SELECT EntrantInfo.*,\n" +
@@ -59,153 +62,110 @@ public class UserDAO {
     private String HASH_DELETE_QUERY = "UPDATE user SET hash=null WHERE hash=?;";
     private String ENTRANT_STATUS = "SELECT enrollment_status FROM entrant WHERE identrant = ?;";
 
-    public CommonUser getRegisteredUser(String login, String hashPassword) throws SQLException {
-        Connection connection = ConnectionPool.getInstance().connect();
-        if(connection == null)
-            throw new SQLException("Couldn't connect data base");
-        ResultSet result;
-        try {
-            PreparedStatement st ;
-            st = connection.prepareStatement(USER_SELECT_QUERY);
+    private Logger logger;
+    public UserDAO(){
+        logger = Logger.getLogger(this.getClass());
+        PropertyConfigurator.configure(this.getClass().getClassLoader().getResource("log4j.properties"));
+    }
+
+    public CommonUser getRegisteredUser(String login, String hashPassword) {
+        CommonUser user=null;
+        try(Connection connection = ConnectionPool.getInstance().connect();
+            PreparedStatement st = connection.prepareStatement(USER_SELECT_QUERY)) {
             st.setString(2,hashPassword);
             st.setString(1,login);
-            result = st.executeQuery();
+            ResultSet result = st.executeQuery();
+            if(!result.next()) {
+                return null;
+            }
+            user = new User(result);
         } catch (SQLException e) {
-          //  log.info(getExceptionStackTrace(e));
-            try {
-                connection.close();
-            } catch (SQLException ignored) { }
-            throw e;
-        }
-
-        if(!result.next()) {
-          //  log.info("false");
-            return null;
-        }
-        CommonUser user = new User(result);
-        try {
-            connection.close();
-        } catch (SQLException e) {
-        //    log.info(getExceptionStackTrace(e));
-            return user;
+          logger.error(getExceptionStackTrace(e));
         }
         return user;
     }
 
-    public void updateHash(String hash,String login,boolean delete) throws SQLException {
-        Connection connection = ConnectionPool.getInstance().connect();
-        if(connection==null)
-            throw new SQLException();
-        PreparedStatement st;
+    public void updateHash(String hash,String login,boolean delete) {
+        String query;
         if(delete)
-            st = connection.prepareStatement(HASH_DELETE_QUERY);
-        else {
-            st = connection.prepareStatement(HASH_SET_QUERY);
-            st.setString(2,login);
+            query = HASH_DELETE_QUERY;
+        else
+            query=HASH_SET_QUERY;{
         }
-        st.setString(1,hash);
-        st.executeUpdate();
-        try {
-            connection.close();
-        }catch(SQLException e){
-          //  log.info(getExceptionStackTrace(e));
+        try(Connection connection = ConnectionPool.getInstance().connect();
+            PreparedStatement st= connection.prepareStatement(query)){
+            if(!delete)
+                st.setString(2,login);
+            st.setString(1,hash);
+            st.executeUpdate();
+        }catch (SQLException e)  {
+            logger.error(getExceptionStackTrace(e));
         }
     }
 
-    public CommonUser getUserByHash(String hash, boolean ENTRANT) throws SQLException {
-        Connection connection = ConnectionPool.getInstance().connect();
-        if(connection == null)
-            throw new SQLException("Couldn't connect data base");
-        ResultSet result;
-        try {
-            PreparedStatement st ;
-            if(ENTRANT)
-                st = connection.prepareStatement(ENTRANT_BY_HASH_QUERY);
-            else
-                st = connection.prepareStatement(USER_BY_HASH_QUERY);
-            st.setString(1,hash);
-            result = st.executeQuery();
-        } catch (SQLException e) {
-            //  log.info(getExceptionStackTrace(e));
-            try {
-                connection.close();
-            } catch (SQLException ignored) { }
-            throw e;
-        }
-        if(!result.next()) {
-            return null;
-        }
-        CommonUser user;
-        if(!ENTRANT) {
-            user = new User(result);
-        }
+    public CommonUser getUserByHash(String hash, boolean entrant){
+        String query;
+        CommonUser user = null;
+        if(entrant)
+            query=ENTRANT_BY_HASH_QUERY;
         else
-            user = new Entrant(result);
-        try {
-            connection.close();
+            query=USER_BY_HASH_QUERY;
+
+        try(Connection connection = ConnectionPool.getInstance().connect();
+            PreparedStatement st= connection.prepareStatement(query)) {
+            st.setString(1,hash);
+            ResultSet result = st.executeQuery();
+            if(!result.next()) {
+                return null;
+            }
+            if(!entrant) {
+                user = new User(result);
+            }
+            else
+                user = new Entrant(result);
         } catch (SQLException e) {
-            return user;
+            logger.error(getExceptionStackTrace(e));
         }
         return user;
     }
 
     public Entrant getEntrantsSubjectsAndCourse(Entrant entrant){
-        Connection conn = ConnectionPool.getInstance().connect();
-        try {
-            PreparedStatement st = conn.prepareStatement(ENTRANTS_SUBJECT_AND_COURSE_QUERY);
+        try(Connection conn = ConnectionPool.getInstance().connect();
+            PreparedStatement st = conn.prepareStatement(ENTRANTS_SUBJECT_AND_COURSE_QUERY)) {
             st.setInt(1,entrant.getId());
             ResultSet result = st.executeQuery();
             if(result.next())
                 entrant.addSubjectsAndCourseInfo(result);
-/*            else
-                ;*/
         } catch (SQLException e) {
+            logger.error(getExceptionStackTrace(e));
         }
         return entrant;
     }
 
-    public CommonUser registerUser(User unregUser, String password) throws SQLException {
-        Connection conn = ConnectionPool.getInstance().connect();
-        if(conn==null)
-            throw new SQLException();
-        try {
+    public CommonUser registerUser(User unregUser, String password) {
+        try(Connection conn = ConnectionPool.getInstance().connect()) {
             PreparedStatement st = conn.prepareStatement(USER_INSERT_QUERY);
             st.setString(1,unregUser.getLogin());
             st.setString(2,password);
             st.setString(3,unregUser.getName());
             st.setString(4,unregUser.getSurname());
-           // log.info(st.toString());
             st.executeUpdate();
         } catch (SQLException e) {
-          //  log.info(getExceptionStackTrace(e));
-            throw e;
-        }
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(getExceptionStackTrace(e));
         }
         return getRegisteredUser(unregUser.getLogin(),password);
     }
 
-    public String getEntrantStatus(int idEntrant) throws SQLException {
-        Connection conn = ConnectionPool.getInstance().connect();
+    public String getEntrantStatus(int idEntrant) {
         String status="";
-        try {
-            PreparedStatement st = conn.prepareStatement(ENTRANT_STATUS);
+        try(Connection conn = ConnectionPool.getInstance().connect();
+            PreparedStatement st = conn.prepareStatement(ENTRANT_STATUS)) {
             st.setInt(1,idEntrant);
-            // log.info(st.toString());
             ResultSet set = st.executeQuery();
             if(set.next())
                 status = set.getString("enrollment_status");
         } catch (SQLException e) {
-            //  log.info(getExceptionStackTrace(e));
-            throw e;
-        }
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(getExceptionStackTrace(e));
         }
         return status;
     }

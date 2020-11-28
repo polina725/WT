@@ -12,6 +12,8 @@
     <servlet-mapping>
         <servlet-name>MainPage</servlet-name>
         <url-pattern>/login</url-pattern>
+        <url-pattern>/change_lang</url-pattern>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 
     <servlet>

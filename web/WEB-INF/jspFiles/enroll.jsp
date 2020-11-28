@@ -1,4 +1,3 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Polina
@@ -8,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <html>
     <head>
         <title>Enrollment form</title>
@@ -17,39 +17,56 @@
         <style><%@include file="/WEB-INF/jspFiles/styles/header.css"%></style>
         <script><%@include file="/WEB-INF/jspFiles/scripts/scriptsCheckingEnrollmentForm.jsp"%></script>
     </head>
-
+    <fmt:setLocale value='<%=request.getSession().getAttribute("lang")%>'/>
+    <fmt:setBundle basename="lang" var="loc"/>
+    <fmt:message bundle="${loc}" key="lang.label.en_lang" var="en_lang"/>
+    <fmt:message bundle="${loc}" key="lang.label.ph" var="phys"/>
+    <fmt:message bundle="${loc}" key="lang.label.ru_lang" var="ru_lang"/>
+    <fmt:message bundle="${loc}" key="lang.label.by_lang" var="by_lang"/>
+    <fmt:message bundle="${loc}" key="lang.label.math" var="math"/>
+    <fmt:message bundle="${loc}" key="lang.label.certificate_score" var="cert"/>
+    <fmt:message bundle="${loc}" key="lang.label.st_lang" var="st_lang"/>
+    <fmt:message bundle="${loc}" key="lang.label.singout" var="out"/>
+    <fmt:message bundle="${loc}" key="lang.label.department" var="dep"/>
+    <fmt:message bundle="${loc}" key="lang.label.instruction" var="instr"/>
     <body>
-    <%@include file="/WEB-INF/jspFiles/templates/header.jsp"%>
 
-    <h1>0/${course.getBudgetPlacesAmount()}</h1>
-    <h1>0/${course.getFeePlacesAmount()}</h1><br>
+    <div class="_header">
+        <div class="_logo">JAVA_WT_2020</div>
+        <div class="_nav">
+            <nav>
+                <a class="_nav_link" href="departments">${dep}</a>
+                <a class="_nav_link" href="login">${out}</a>
+            </nav>
+        </div>
+    </div>
+
     <div class="_forms">
         <form action="" method="post" oninput="checkForm()">
 
             <div class="ru_by_language_choose">
-                <p>Выберите гос язык</p>
                 <input type="radio" id="ru" name="language" value="ru">
-                <label for="ru">Русский</label><br>
+                <label for="ru">${ru_lang}</label><br>
                 <input type="radio" id="by" name="language" value="by">
-                <label for="by">Белоруский</label><br>
+                <label for="by">${by_lang}</label><br>
+                <label for="state_lan">${st_lang}</label><br>
+                <input type="number" id="state_lan" name="state_lan" min="0" max="100" value="0"/><br>
             </div>
 
 
             <div class="scores">
-                <p>Enter each subject's score</p>
+                <p>${instr}</p>
                 <c:forEach  var="subj" items="${course.getSubjects()}">
                     <label for="${subj.getId()}">
                         <c:choose>
-                            <c:when test="${subj.getId()==1}">Английский язык</c:when>
-                            <c:when test="${subj.getId()==3}">Физика</c:when>
-                            <c:otherwise>Математика</c:otherwise>
+                            <c:when test="${subj.getId()==1}">${en_lang}</c:when>
+                            <c:when test="${subj.getId()==3}">${phys}</c:when>
+                            <c:otherwise>${math}</c:otherwise>
                         </c:choose>
                     </label><br>
                     <input type="number" id="${subj.getId()}" name="${subj.getName()}" min="0" max="100" value="0"/><br>
                 </c:forEach>
-                <label for="state_lan">Гос язык</label><br>
-                <input type="number" id="state_lan" name="state_lan" min="0" max="100" value="0"/><br>
-                <label for="certificate">Бал аттестата</label><br>
+                <label for="certificate">${cert}</label><br>
                 <input type="number" id="certificate" name="certificate_score" min="0" max="100" value="0"/><br>
             </div>
 

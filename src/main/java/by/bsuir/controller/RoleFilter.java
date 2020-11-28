@@ -34,16 +34,10 @@ public class RoleFilter implements Filter {
 
     private Boolean checkAccessRole(HttpServletRequest req,String actualRole,String status) {
         if (req.getServletContext().getServletRegistrations().get("AdminsPage").getMappings().contains(req.getServletPath())) {
-            if ("ADMIN".equals(actualRole))
-                return true;
-            else
-                return false;
+            return "ADMIN".equals(actualRole);
         }
         else if (req.getServletContext().getServletRegistrations().get("EnrollmentForm").getMappings().contains(req.getServletPath())) {
-            if ("STUDENT".equals(actualRole) && ("UNDEFINED".equals(status) || "ENROLLING".equals(status)))
-                return true;
-            else
-                return false;
+            return "STUDENT".equals(actualRole) && ("UNDEFINED".equals(status) || "ENROLLING".equals(status));
         }
         else return true;
     }

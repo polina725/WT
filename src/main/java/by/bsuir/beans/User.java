@@ -9,7 +9,6 @@ public class User implements CommonUser {
     private String role;
     private String login;
     private int id;
-//    private String hash;
 
     public User(int id){
         this.id = id;
@@ -22,7 +21,6 @@ public class User implements CommonUser {
             surname = set.getString("surname");
             role = set.getString("role");
             login = set.getString("login");
-//            hash=set.getString("hash");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -53,8 +51,4 @@ public class User implements CommonUser {
     public int getId() {
         return id;
     }
-
-    /*public String getHash() {
-        return hash;
-    }*/
 }

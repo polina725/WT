@@ -2,6 +2,10 @@ package by.bsuir.controller;
 
 import by.bsuir.beans.Course;
 import by.bsuir.beans.Entrant;
+import by.bsuir.beans.Subject;
+import by.bsuir.dao.EnrollmentDAO;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,23 +13,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
 
-import static by.bsuir.service.SomeAction.*;
+import static by.bsuir.service.Utilities.*;
 
 public class EnrollmentController extends HttpServlet {
-    final static Logger log;
-    static{
-        log = Logger.getLogger(Controller.class.getName());
-        try {
-            log.addHandler(new FileHandler("D:/log.txt"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private Logger logger;
+    private EnrollmentDAO enrollmentDAO = new EnrollmentDAO();
+
+    public EnrollmentController(){
+        logger = Logger.getLogger(this.getClass());
+        PropertyConfigurator.configure(this.getClass().getClassLoader().getResource("log4j.properties"));
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Entrant entrant = (Entrant) getUserByHash((String)session.getAttribute("hash"),true,false);
         entrant.setCertificate(Integer.parseInt(request.getParameter("certificate_score")));
@@ -40,20 +40,30 @@ public class EnrollmentController extends HttpServlet {
         session.removeAttribute("first_s_id");
         session.removeAttribute("second_s_id");
         response.sendRedirect("departments");
-        //request.getRequestDispatcher("/WEB-INF/jspFiles/enroll.jsp").forward(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         String courseName= (String)session.getAttribute("chosen_course");
-        Course c = getCourseInfo(courseName);
+        Course c = enrollmentDAO.getCourseFullInfo(courseName);
         session.setAttribute("first_s_id",c.getSubjects()[0].getId());
         session.setAttribute("second_s_id",c.getSubjects()[1].getId());
         session.setAttribute("first_s",c.getSubjects()[0].getName());
         session.setAttribute("second_s",c.getSubjects()[1].getName());
         request.setAttribute("course",c);
-  //      request.setAttribute("error_message",session.getAttribute("chosen_course")+"\n"+session.getAttribute("hash"));
         request.getRequestDispatcher("/WEB-INF/jspFiles/enroll.jsp").forward(request, response);
     }
 
+    private void addEntrantEnrollmentInfo(Entrant entrant,String stateLanguage,int score){
+        int stateLanId = enrollmentDAO.getStateLanguageId(stateLanguage);
+        if(stateLanId!=-1) {
+            entrant.getSubjects()[2] = new Subject("", stateLanId, score);
+            entrant.calcTotalScore();
+        }
+        int courseId = enrollmentDAO.getCourseIdByName(entrant.getCourse());
+        entrant.setCourseId(courseId);
+        if(entrant.getStatus().equals("ENROLLING"))
+            enrollmentDAO.deleteEntrantsSubjects(entrant);
+        enrollmentDAO.pushEntrantEnrollmentData(entrant);
+    }
 }
